@@ -11,13 +11,14 @@ primary components:
 Both parts are intentionally minimal at this stage to serve as a solid
 foundation for subsequent phases.
 
-## Project Structure
+## Project Structure (Phase 2 – Backend API routes added)
 ```
 ApplyPilot/
 ├─ backend/        # FastAPI application
 │  ├─ app/
 │  │  ├─ api/
-│  │  │  └─ health.py
+│  │  │  ├─ health.py
+│  │  │  └─ jobs.py
 │  │  └─ main.py
 │  ├─ tests/
 │  │  ├─ conftest.py

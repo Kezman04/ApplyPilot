@@ -7,6 +7,7 @@ structure required to start the server and run tests.
 
 from fastapi import FastAPI
 from .api.health import router as health_router
+from .api.jobs import router as jobs_router
 
 
 def create_app() -> FastAPI:
@@ -20,9 +21,10 @@ def create_app() -> FastAPI:
     app = FastAPI(title="ApplyPilot Backend")
     # Register API routers
     app.include_router(health_router, prefix="", tags=["Health"])
+    # Job analysis API – thin wrapper delegating to service layer
+    app.include_router(jobs_router, prefix="", tags=["Jobs"])
     return app
 
 
 # Expose the app for Uvicorn or other ASGI servers.
 app = create_app()
-
