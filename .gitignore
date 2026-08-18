@@ -1,0 +1,30 @@
+# Root .gitignore
+__pycache__/
+*.pyc
+.env
+.env.local
+venv/
+ENV/
+.venv/
+.python-version
+.ipynb_checkpoints
+.idea/
+.vscode/
+.DS_Store
+*.sqlite3
+node_modules/
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.settings/
+*.code-workspace
+
+# Generated files
+frontend/dist/
+*.egg-info/
