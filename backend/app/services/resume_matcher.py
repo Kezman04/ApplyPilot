@@ -56,7 +56,7 @@ JOB POSTING:
 
     if missing_skills:
         result["recommendations"] = [
-            f"Consider gaining experience with {skill}."
+            f"Build familiarity with {skill} through coursework, personal projects, labs, or hands-on practice."
             for skill in missing_skills[:5]
         ]
 

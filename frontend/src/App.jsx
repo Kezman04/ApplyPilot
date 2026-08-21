@@ -211,18 +211,6 @@ async function handleResumeFile(event) {
   </button>
 </div>
 
-  <button
-  className="analyze-button"
-  onClick={handleTailorResume}
-  disabled={
-    tailorLoading ||
-    !resumeText.trim() ||
-    !jobDescription.trim()
-  }
->
-  {tailorLoading ? "Tailoring Resume..." : "Tailor Resume"}
-</button>
-
       {loading && (
   <div className="loading-card">
     <div className="spinner"></div>
@@ -236,82 +224,142 @@ async function handleResumeFile(event) {
       {error && <div className="error">{error}</div>}
 
       {result && (
-        <section className="results">
-          <div className="score-card">
-           <div className="score-card-content">
-  <div>
-    <p className="score-label">OVERALL MATCH</p>
-    <div className="score">{result.match_score}%</div>
-  </div>
+  <section className="results">
 
-  <div className="score-summary">
-    <span className="score-status">
-      {result.match_score >= 80
-        ? "Strong Match"
-        : result.match_score >= 60
-        ? "Good Match"
-        : "Needs Improvement"}
-    </span>
+    {/* Match score */}
+    <div className="score-card">
+      <div className="score-card-content">
+        <div>
+          <p className="score-label">OVERALL MATCH</p>
+          <div className="score">{result.match_score}%</div>
+        </div>
 
-    <p>
-      Based on the skills, experience, and requirements found in the job posting.
-    </p>
-  </div>
-</div> 
+        <div className="score-summary">
+          <span className="score-status">
+            {result.match_score >= 80
+              ? "Strong Match"
+              : result.match_score >= 60
+              ? "Good Match"
+              : "Needs Improvement"}
+          </span>
+
+          <p>
+            Your resume was compared against the skills, experience,
+            and requirements found in this job posting.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Skills comparison */}
+    <div className="section-heading">
+      <p className="section-eyebrow">MATCH BREAKDOWN</p>
+      <h2>How your resume lines up</h2>
+    </div>
+
+    <div className="results-grid">
+      <div className="result-card match-card">
+        <div className="card-heading-row">
+          <div className="result-icon match-icon">✓</div>
+
+          <div>
+            <h3>What You Match</h3>
+            <p className="card-description">
+              Skills already supported by your resume.
+            </p>
           </div>
+        </div>
 
-          <div className="results-grid">
-            <div className="result-card">
-              <h3>Matched Skills</h3>
-              <ul className="skill-list">
-                {result.matched_skills.map((skill) => (
-                  <li className="skill-pill" key={skill}>
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <ul className="skill-list">
+          {result.matched_skills.map((skill) => (
+            <li className="skill-pill matched-pill" key={skill}>
+              {skill}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-            <div className="result-card">
-              <h3>Missing Skills</h3>
-              <ul className="skill-list">
-                {result.missing_skills.map((skill) => (
-                  <li className="skill-pill" key={skill}>
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <div className="result-card missing-card">
+        <div className="card-heading-row">
+          <div className="result-icon missing-icon">!</div>
 
-            <div className="result-card">
-              <h3>Strengths</h3>
-              <ul>
-                {result.strengths.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="result-card">
-              <h3>Gaps</h3>
-              <ul>
-                {result.gaps.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="result-card recommendations-card">
-              <h3>Recommendations</h3>
-              <ul>
-                {result.recommendations.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
+          <div>
+            <h3>What You're Missing</h3>
+            <p className="card-description">
+              Requirements not currently supported by your resume.
+            </p>
           </div>
-        </section>
-      )}
+        </div>
+
+        <ul className="skill-list">
+          {result.missing_skills.map((skill) => (
+            <li className="skill-pill missing-pill" key={skill}>
+              {skill}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    {/* Strengths and gaps */}
+    <div className="insight-grid">
+      <div className="insight-panel">
+        <p className="insight-number">01</p>
+
+        <div>
+          <h3>Strengths</h3>
+
+          <ul>
+            {result.strengths.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="insight-panel">
+        <p className="insight-number">02</p>
+
+        <div>
+          <h3>Areas to Improve</h3>
+
+          <ul>
+            {result.gaps.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {/* Recommendations */}
+    <div className="recommendations-panel">
+      <div className="recommendations-header">
+        <div>
+          <p className="section-eyebrow">NEXT STEPS</p>
+          <h3>Recommendations</h3>
+        </div>
+
+        <span className="recommendation-count">
+          {result.recommendations.length} suggestions
+        </span>
+      </div>
+
+      <div className="recommendation-list">
+        {result.recommendations.map((item, index) => (
+          <div className="recommendation-item" key={index}>
+            <span className="recommendation-number">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+
+            <p>{item}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </section>
+)}
       {tailorResult && (
   <section className="results">
     <div className="score-card">
