@@ -1,69 +1,77 @@
-# README for ApplyPilot root project
+# ApplyPilot
 
-## Overview
-ApplyPilot is a local‑first AI job‑application assistant. This repo contains two
-primary components:
+ApplyPilot is a local AI-powered resume analysis and tailoring tool that compares a candidate's resume against a job description, identifies strengths and gaps, and generates safer resume improvement suggestions without inventing unsupported experience.
 
-* **Backend** – FastAPI service providing health checks and a foundation for
-  future business logic.
-* **Frontend** – React + Vite starter that will host the user interface.
+## Features
 
-Both parts are intentionally minimal at this stage to serve as a solid
-foundation for subsequent phases.
+- Upload and extract text from PDF, DOCX, and TXT resumes
+- Compare a resume against a job description
+- Generate an overall match score
+- Identify matched skills and missing skills
+- Highlight strengths and gaps
+- Generate safe recommendations for missing experience
+- Tailor resume summaries and bullet points
+- Reject unsupported or exaggerated rewrite suggestions
+- Copy improved bullet suggestions directly from the interface
+- Run AI processing locally using Ollama
 
-## Project Structure (Phase 2 – Backend API routes added)
-```
-ApplyPilot/
-├─ backend/        # FastAPI application
-│  ├─ app/
-│  │  ├─ api/
-│  │  │  ├─ health.py
-│  │  │  └─ jobs.py
-│  │  └─ main.py
-│  ├─ tests/
-│  │  ├─ conftest.py
-│  │  └─ test_health.py
-│  ├─ .env.example
-│  └─ pyproject.toml
-├─ frontend/       # React + Vite app
-│  ├─ src/
-│  │  └─ App.jsx
-│  ├─ vite.config.js
-│  ├─ package.json
-│  └─ .env.example
-└─ README.md
-```
-
-## Getting Started
-
-### Backend
-```bash
-cd backend
-pip install -e .[dev]   # or pip install -r requirements.txt if you prefer
-uvicorn app.main:app --reload
-```
-The service will be available at `http://localhost:8000`. The health endpoint is
-`GET /health`.
+## Tech Stack
 
 ### Frontend
-```bash
-cd frontend
-npm install
-npm run dev   # starts the Vite dev server on http://localhost:5173
-```
+- React
+- Vite
+- JavaScript
+- CSS
 
-## Testing
-Backend tests are written with Pytest and can be executed from the `backend`
-directory:
-```bash
-pytest
-```
-Frontend build verification is handled via the Vite build script.
+### Backend
+- Python
+- FastAPI
+- Pydantic
 
-## Contributing
-Feel free to open issues or pull requests. This repository follows standard
-Python/Node conventions and aims to keep the codebase lightweight.
-```
----
-Author: ApplyPilot Core Team
-Date: 2026-08-17
+### AI
+- Ollama
+- Local language model inference
+
+## How It Works
+
+1. The user uploads a resume.
+2. ApplyPilot extracts the resume text.
+3. The user pastes a target job description.
+4. The backend sends structured prompts to a local Ollama model.
+5. ApplyPilot returns:
+   - match score
+   - matched skills
+   - missing skills
+   - strengths
+   - gaps
+   - recommendations
+6. The resume tailoring feature generates improved wording while applying safeguards against unsupported claims.
+
+## Safety-Focused Resume Tailoring
+
+ApplyPilot is designed to improve wording without fabricating experience.
+
+The tailoring pipeline checks generated suggestions and rejects rewrites that introduce unsupported technologies, skills, responsibilities, or stronger claims than the original resume supports.
+
+For genuinely missing skills, the application recommends gaining experience rather than falsely adding them to the resume.
+
+## Project Structure
+
+```text
+ApplyPilot/
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── main.py
+│   └── tests/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   └── main.jsx
+│   └── package.json
+│
+└── README.md
