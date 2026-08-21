@@ -124,10 +124,36 @@ async function handleResumeFile(event) {
   return (
   <main className="app-shell">
     <div className="app-container">
-      <header className="hero">
+      <header className="top-header">
+  <div>
+    <div className="brand-row">
+      <div className="brand-icon">A</div>
+
+      <div>
         <h1>ApplyPilot</h1>
-        <p>AI-powered resume and job match analysis.</p>
-      </header>
+        <p className="brand-subtitle">
+          AI-powered resume matching and tailoring
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div className="local-ai-badge">
+    <span className="status-dot"></span>
+    Local AI
+  </div>
+</header>
+
+<section className="intro-section">
+  <p className="eyebrow">RESUME INTELLIGENCE</p>
+
+  <h2>See how well your resume fits the role.</h2>
+
+  <p className="intro-text">
+    Upload your resume, paste a job description, and get a structured
+    breakdown of your match, gaps, and safe improvement suggestions.
+  </p>
+</section>
       <section className= "input-grid">
       <div className="card">
         <h2>Resume</h2>
