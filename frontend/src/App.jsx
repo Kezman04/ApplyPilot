@@ -189,6 +189,7 @@ async function handleResumeFile(event) {
       </div>
     </section>
 
+  <div className="action-row">
   <button
     className="analyze-button"
     onClick={handleAnalyze}
@@ -196,6 +197,19 @@ async function handleResumeFile(event) {
   >
     {loading ? "Analyzing with local AI..." : "Analyze Match"}
   </button>
+
+  <button
+    className="tailor-button"
+    onClick={handleTailorResume}
+    disabled={
+      tailorLoading ||
+      !resumeText.trim() ||
+      !jobDescription.trim()
+    }
+  >
+    {tailorLoading ? "Tailoring Resume..." : "Tailor Resume"}
+  </button>
+</div>
 
   <button
   className="analyze-button"
@@ -224,8 +238,26 @@ async function handleResumeFile(event) {
       {result && (
         <section className="results">
           <div className="score-card">
-            <p>Overall Match</p>
-            <div className="score">{result.match_score}%</div>
+           <div className="score-card-content">
+  <div>
+    <p className="score-label">OVERALL MATCH</p>
+    <div className="score">{result.match_score}%</div>
+  </div>
+
+  <div className="score-summary">
+    <span className="score-status">
+      {result.match_score >= 80
+        ? "Strong Match"
+        : result.match_score >= 60
+        ? "Good Match"
+        : "Needs Improvement"}
+    </span>
+
+    <p>
+      Based on the skills, experience, and requirements found in the job posting.
+    </p>
+  </div>
+</div> 
           </div>
 
           <div className="results-grid">
