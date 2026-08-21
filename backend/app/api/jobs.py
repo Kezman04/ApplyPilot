@@ -15,7 +15,7 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import ValidationError
 
 from ..schemas.job_schema import JobAnalysisRequest, JobAnalysisResponse
-from ..services.job_analysis import analyze_job_description
+from ..services.job_analysis import analyze_job_description_ai
 
 router = APIRouter()
 
@@ -46,7 +46,7 @@ def job_analyze(request: JobAnalysisRequest) -> JobAnalysisResponse:
             detail="job_description must be non‑empty",
         )
 
-    result = analyze_job_description(request.job_description)
+    result = analyze_job_description_ai(request.job_description)
     try:
         response = JobAnalysisResponse(**result)
     except ValidationError as exc:  # pragma: no cover - defensive
