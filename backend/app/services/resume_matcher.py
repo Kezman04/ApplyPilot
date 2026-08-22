@@ -23,7 +23,10 @@ Return ONLY valid JSON with exactly these keys:
 }}
 
 Rules:
-- match_score must be an integer from 0 to 100.
+- match_score must be the most accurate whole-number score from 0 to 100.
+- Do not round match_score to multiples of 5 or 10.
+- Scores such as 63, 71, 78, 84, or 92 are valid when justified by the actual resume-to-job match.
+- Base match_score on the actual degree of alignment between the resume and job requirements.
 - matched_skills must contain skills supported by BOTH the resume and job posting.
 - missing_skills must contain important job requirements not supported by the resume.
 - strengths must describe evidence-based advantages from the resume.
