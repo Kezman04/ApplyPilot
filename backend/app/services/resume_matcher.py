@@ -1,8 +1,19 @@
 import json
 from typing import Dict, List
 
-from app.services.ollama_client import ask_ollama
+import os
 
+from app.services.ollama_client import ask_ollama
+from app.services.openrouter_client import ask_openrouter
+
+
+def ask_ai(prompt: str) -> str:
+    provider = os.getenv("AI_PROVIDER", "ollama").lower()
+
+    if provider == "openrouter":
+        return ask_openrouter(prompt)
+
+    return ask_ollama(prompt)
 
 def analyze_resume_match(
     resume_text: str,
@@ -43,7 +54,7 @@ JOB POSTING:
 {job_description}
 """
 
-    raw_response = ask_ollama(prompt)
+    raw_response = ask_ai(prompt)
     result = json.loads(raw_response)
 
     score = result.get("match_score", 0)
@@ -313,7 +324,7 @@ JOB DESCRIPTION:
 {job_description}
 """
 
-    raw_response = ask_ollama(prompt)
+    raw_response = ask_ai(prompt)
     result = json.loads(raw_response)
 
     resume_lower = resume_text.lower()
