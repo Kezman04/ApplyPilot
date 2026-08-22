@@ -23,11 +23,14 @@ def create_app() -> FastAPI:
     app = FastAPI(title="ApplyPilot Backend")
     app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://beans-pants-midwest-anyone.trycloudflare.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    )
+)
     # Register API routers
     app.include_router(health_router, prefix="", tags=["Health"])
     # Job analysis API – thin wrapper delegating to service layer
