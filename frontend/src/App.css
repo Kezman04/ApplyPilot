@@ -963,3 +963,73 @@ textarea:focus {
     flex-direction: column;
   }
 }
+/* ---------- Tailoring safety colors ---------- */
+
+.safe-rewrite {
+  background: #f0fdf4;
+  border-left: 4px solid #12b76a;
+}
+
+.safe-rewrite .rewrite-label {
+  color: #067647;
+}
+
+.safe-rewrite .copy-button {
+  border-color: #abefc6;
+  background: #ffffff;
+  color: #067647;
+}
+
+.safe-rewrite .copy-button:hover {
+  background: #ecfdf3;
+  border-color: #75e0a7;
+}
+
+.rejected-rewrite {
+  background: #fff4ed;
+  border-left: 4px solid #f04438;
+}
+
+.rejected-rewrite .rewrite-label {
+  color: #b42318;
+}
+
+.rejected-rewrite .copy-button {
+  border-color: #fecdca;
+  background: #ffffff;
+  color: #b42318;
+}
+
+.rejected-rewrite .copy-button:hover {
+  background: #fef3f2;
+  border-color: #fda29b;
+}
+
+.rejected-message {
+  margin-bottom: 14px;
+  color: #b42318;
+}
+
+.keep-original-box {
+  margin-top: 12px;
+  padding: 14px 16px;
+
+  background: #f0fdf4;
+  border-left: 4px solid #12b76a;
+  border-radius: 8px;
+}
+
+.keep-original-label {
+  display: block;
+  margin-bottom: 6px;
+
+  color: #067647;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tailor-full-width {
+  grid-column: 1 / -1;
+}

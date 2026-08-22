@@ -29,7 +29,7 @@ async function handleResumeFile(event) {
 
   try {
     const response = await fetch(
-      "http://127.0.0.1:8000/api/resume/extract",
+      "/api/resume/extract",
       {
         method: "POST",
         body: formData,
@@ -60,7 +60,7 @@ async function handleResumeFile(event) {
     setResult(null);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/resume/match", {
+      const response = await fetch("/api/resume/match", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ async function handleResumeFile(event) {
 
   try {
     const response = await fetch(
-      "http://127.0.0.1:8000/api/resume/tailor",
+      "/api/resume/tailor",
       {
         method: "POST",
         headers: {
@@ -384,64 +384,96 @@ async function handleResumeFile(event) {
         </ul>
       </div>
 
-      <div className="result-card">
-        <h3>Missing Skills</h3>
-        <ul className="skill-list">
-          {tailorResult.missing_skills.map((skill) => (
-            <li className="skill-pill" key={skill}>
-              {skill}
-            </li>
-          ))}
-        </ul>
-      </div>
+      
 
-      <div className="result-card">
-        <h3>Keywords to Add</h3>
+      <div className="result-card tailor-full-width">
+        <h3>Relevant Keywords to Use</h3>
+        <p className="card-description">
+          Job-relevant terminology already supported by your resume.
+        </p>
         <ul>
           {tailorResult.keywords_to_add.map((item, index) => (
             <li key={index}>{item}</li>
           ))}
         </ul>
       </div>
+<div className="result-card tailor-full-width">
+  <h3>Bullet Rewrites</h3>
 
-      <div className="result-card">
-        <h3>Bullet Rewrites</h3>
+  {tailorResult.bullet_rewrites.map((rewrite, index) => {
+    const isRejected = rewrite.reason
+      ?.toLowerCase()
+      .includes("rejected because");
 
-        {tailorResult.bullet_rewrites.map((rewrite, index) => (
-  <div className="rewrite-card" key={index}>
-    <div className="rewrite-block">
-      <span className="rewrite-label">Original</span>
-      <p>{rewrite.original}</p>
-    </div>
+    return (
+      <div className="rewrite-card" key={index}>
+        <div className="rewrite-block">
+          <span className="rewrite-label">Original</span>
+          <p>{rewrite.original}</p>
+        </div>
 
-    <div className="rewrite-block suggested-block">
-      <span className="rewrite-label">Suggested</span>
-      <p>{rewrite.suggested}</p>
+        {isRejected ? (
+          <>
+            <div className="rewrite-block rejected-rewrite">
+              <span className="rewrite-label">Rejected Suggestion</span>
+              <p>
+                The AI-generated rewrite was rejected because it introduced
+                an unsupported or stronger claim.
+              </p>
+            </div>
 
-      <button
-  className="copy-button"
-  onClick={() => {
-    navigator.clipboard.writeText(rewrite.suggested);
-    setCopiedIndex(index);
+            <div className="rewrite-block keep-original-box">
+              <span className="rewrite-label keep-original-label">
+                Keep Original
+              </span>
 
-    setTimeout(() => {
-      setCopiedIndex(null);
-    }, 1500);
-  }}
->
-  {copiedIndex === index ? "Copied!" : "Copy Suggested"}
-</button>
-    </div>
+              <p>{rewrite.original}</p>
 
-    <div className="rewrite-block">
-      <span className="rewrite-label">Why</span>
-      <p>{rewrite.reason}</p>
-    </div>
-  </div>
-))}
+              <button
+                className="copy-button"
+                onClick={() => {
+                  navigator.clipboard.writeText(rewrite.original);
+                  setCopiedIndex(index);
+
+                  setTimeout(() => {
+                    setCopiedIndex(null);
+                  }, 1500);
+                }}
+              >
+                {copiedIndex === index ? "Copied!" : "Copy Original"}
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="rewrite-block suggested-block safe-rewrite">
+            <span className="rewrite-label">Suggested</span>
+            <p>{rewrite.suggested}</p>
+
+            <button
+              className="copy-button"
+              onClick={() => {
+                navigator.clipboard.writeText(rewrite.suggested);
+                setCopiedIndex(index);
+
+                setTimeout(() => {
+                  setCopiedIndex(null);
+                }, 1500);
+              }}
+            >
+              {copiedIndex === index ? "Copied!" : "Copy Suggested"}
+            </button>
+          </div>
+        )}
+
+        <div className="rewrite-block">
+          <span className="rewrite-label">Why</span>
+          <p>{rewrite.reason}</p>
+        </div>
       </div>
-
-      <div className="result-card recommendations-card">
+    );
+  })}
+</div>
+      <div className="result-card recommendations-card tailor-full-width">
         <h3>General Recommendations</h3>
         <ul>
           {tailorResult.general_recommendations.map((item, index) => (

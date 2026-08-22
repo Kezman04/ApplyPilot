@@ -55,12 +55,45 @@ JOB POSTING:
     missing_skills = result.get("missing_skills", [])
 
     if missing_skills:
-        result["recommendations"] = [
-            f"Build familiarity with {skill} through coursework, personal projects, labs, or hands-on practice."
-            for skill in missing_skills[:5]
-        ]
+        recommendations = []
 
-    return result
+        for skill in missing_skills[:5]:
+            skill_lower = skill.lower()
+
+            if any(word in skill_lower for word in ["tool", "software", "cad", "uvm"]):
+                recommendation = (
+                    f"Explore {skill} through a focused lab, tutorial, "
+                    f"or small project that gives you hands-on exposure."
+                )
+
+            elif any(word in skill_lower for word in ["design", "pcb", "rtl", "vlsi"]):
+                recommendation = (
+                    f"Develop practical familiarity with {skill} by applying "
+                    f"the underlying concepts in a small design project."
+                )
+
+            elif any(word in skill_lower for word in ["analysis", "integrity", "power", "noise"]):
+                recommendation = (
+                    f"Strengthen your understanding of {skill} through "
+                    f"coursework, technical exercises, and hands-on analysis."
+                )
+
+            elif any(word in skill_lower for word in ["verification", "testing", "testbench"]):
+                recommendation = (
+                    f"Build experience with {skill} through verification labs, "
+                    f"test exercises, or a relevant personal project."
+                )
+
+            else:
+                recommendation = (
+                    f"Build familiarity with {skill} through coursework, "
+                    f"projects, labs, or hands-on practice."
+                )
+
+            recommendations.append(recommendation)
+
+        result["recommendations"] = recommendations
+
 
     return result
 
@@ -303,7 +336,7 @@ JOB DESCRIPTION:
         "coverage-driven",
         "coverage driven",
         "post-silicon",
-        "post silicon",
+        "post silicfor rewriteon",
         "power integrity",
         "randomized testing",
     ]
@@ -318,8 +351,25 @@ JOB DESCRIPTION:
     ]
 
     for rewrite in result.get("bullet_rewrites", []):
-        original = rewrite.get("original", "")
-        suggested = rewrite.get("suggested", "")
+        # Ignore malformed model output instead of letting it crash
+        # the entire tailoring response.
+        if not isinstance(rewrite, dict):
+            continue
+
+        original = str(rewrite.get("original") or "").strip()
+        suggested = str(rewrite.get("suggested") or "").strip()
+        reason = str(rewrite.get("reason") or "").strip()
+
+        # A rewrite is useless if we cannot identify the original bullet.
+        if not original:
+            continue
+
+        # Guarantee every rewrite satisfies the Pydantic schema.
+        if not suggested:
+            suggested = original
+
+        if not reason:
+            reason = "No safe wording improvement was provided."
 
         original_lower = original.lower()
         suggested_lower = suggested.lower()
@@ -339,13 +389,21 @@ JOB DESCRIPTION:
                 {
                     "original": original,
                     "suggested": original,
-                    "reason": "Rejected because the rewrite introduced an unsupported or stronger claim.",
+                    "reason": (
+                        "Rejected because the rewrite introduced an "
+                        "unsupported or stronger claim."
+                    ),
                 }
             )
         else:
-            safe_rewrites.append(rewrite)
+            safe_rewrites.append(
+                {
+                    "original": original,
+                    "suggested": suggested,
+                    "reason": reason,
+                }
+            )
 
     result["bullet_rewrites"] = safe_rewrites
-
     return result
     
