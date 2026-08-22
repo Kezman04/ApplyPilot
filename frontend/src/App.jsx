@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
 function App() {
   const [resumeText, setResumeText] = useState("");
@@ -29,7 +31,7 @@ async function handleResumeFile(event) {
 
   try {
     const response = await fetch(
-      "/api/resume/extract",
+      `${API_BASE_URL}/api/resume/extract`,
       {
         method: "POST",
         body: formData,
@@ -60,7 +62,7 @@ async function handleResumeFile(event) {
     setResult(null);
 
     try {
-      const response = await fetch("/api/resume/match", {
+      const response = await fetch(`${API_BASE_URL}/api/resume/match`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,8 +92,7 @@ async function handleResumeFile(event) {
   setTailorResult(null);
 
   try {
-    const response = await fetch(
-      "/api/resume/tailor",
+    const response = await fetch(`${API_BASE_URL}/api/resume/tailor`,
       {
         method: "POST",
         headers: {
