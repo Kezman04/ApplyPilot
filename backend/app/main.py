@@ -24,9 +24,9 @@ def create_app() -> FastAPI:
     app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "https://beans-pants-midwest-anyone.trycloudflare.com",
-    ],
+    "http://localhost:5173",
+    "https://beans-pants-midwest-anyone.trycloudflare.com",
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
