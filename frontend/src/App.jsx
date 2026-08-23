@@ -196,7 +196,7 @@ async function handleResumeFile(event) {
     onClick={handleAnalyze}
     disabled={loading || !resumeText.trim() || !jobDescription.trim()}
   >
-    {loading ? "Analyzing with local AI..." : "Analyze Match"}
+    {loading ? "Waking server and analyzing..." : "Analyze Match"}
   </button>
 
   <button
@@ -208,7 +208,7 @@ async function handleResumeFile(event) {
       !jobDescription.trim()
     }
   >
-    {tailorLoading ? "Tailoring Resume..." : "Tailor Resume"}
+    {tailorLoading ? "Waking server and tailoring..." : "Tailor Resume"}
   </button>
 </div>
 
