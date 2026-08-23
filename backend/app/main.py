@@ -1,4 +1,4 @@
-"""FastAPI application entry point for ApplyPilot backend.
+"""FastAPI application entry point for ResCheck backend.
 
 This module sets up the FastAPI app, includes API routers and provides a simple
 health check endpoint. No business logic is implemented yet – only the minimal
@@ -20,12 +20,12 @@ def create_app() -> FastAPI:
     FastAPI
         The configured FastAPI app instance.
     """
-    app = FastAPI(title="ApplyPilot Backend")
+    app = FastAPI(title="ResCheck Backend")
     app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://applypilot-wca4.onrender.com",
+    "https://reschek.onrender.com/",
 ],
     allow_credentials=True,
     allow_methods=["*"],
