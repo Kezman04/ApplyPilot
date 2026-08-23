@@ -6,6 +6,11 @@ ResChek is an AI-powered resume analysis and tailoring web application that comp
 
 https://reschek.onrender.com
 
+## GitHub
+
+https://github.com/Kezman04/ResCheck
+
+
 > ResChek is currently hosted using Render's free tier. The backend may spin down after inactivity, so the first request can take longer while the server wakes up.
 
 ## Features
