@@ -57,6 +57,8 @@ JOB POSTING:
     raw_response = ask_ai(prompt)
     result = json.loads(raw_response)
 
+    
+
     score = result.get("match_score", 0)
 
     try:
@@ -111,8 +113,14 @@ JOB POSTING:
 
     return result
 
-def tailor_resume(resume_text: str, job_description: str):
-    prompt = f"""
+    def tailor_resume(resume_text: str, job_description: str):
+        prompt = f"""
+    IMPORTANT:
+    Return ONLY valid JSON.
+    Do not use Markdown or code fences.
+    Do not include any text before or after the JSON.
+    Double-check that every property is separated by a comma and that the JSON can be parsed by json.loads().
+    Keep responses concise.
 You are an expert resume editor and tailoring assistant.
 
 Your job is to improve the candidate's resume for the target job while preserving factual accuracy.
@@ -324,100 +332,114 @@ JOB DESCRIPTION:
 {job_description}
 """
 
-    raw_response = ask_ai(prompt)
-    result = json.loads(raw_response)
+    aw_response = ask_ai(prompt)
 
-    resume_lower = resume_text.lower()
+    try:
+        result = json.loads(raw_response)
+    except json.JSONDecodeError:
+        cleaned_response = raw_response.strip()
 
-    result["skills_to_emphasize"] = [
-        skill
-        for skill in result.get("skills_to_emphasize", [])
-        if skill.lower() in resume_lower
-    ]
+        if cleaned_response.startswith("```json"):
+            cleaned_response = cleaned_response[7:]
+        elif cleaned_response.startswith("```"):
+            cleaned_response = cleaned_response[3:]
 
-    result["keywords_to_add"] = [
-        keyword
-        for keyword in result.get("keywords_to_add", [])
-        if keyword.lower() in resume_lower
-    ]
+        if cleaned_response.endswith("```"):
+            cleaned_response = cleaned_response[:-3]
 
-    safe_rewrites = []
+        result = json.loads(cleaned_response.strip())
 
-    blocked_terms = [
-        "signal integrity",
-        "formal verification",
-        "uvm",
-        "coverage-driven",
-        "coverage driven",
-        "post-silicon",
-        "post silicfor rewriteon",
-        "power integrity",
-        "randomized testing",
-    ]
+        resume_lower = resume_text.lower()
 
-    experience_upgrades = [
-        "gained practical experience",
-        "gained hands-on experience",
-        "gained hands on experience",
-        "proficient",
-        "expert",
-        "advanced experience",
-    ]
+        result["skills_to_emphasize"] = [
+            skill
+            for skill in result.get("skills_to_emphasize", [])
+            if skill.lower() in resume_lower
+        ]
 
-    for rewrite in result.get("bullet_rewrites", []):
-        # Ignore malformed model output instead of letting it crash
-        # the entire tailoring response.
-        if not isinstance(rewrite, dict):
-            continue
+        result["keywords_to_add"] = [
+            keyword
+            for keyword in result.get("keywords_to_add", [])
+            if keyword.lower() in resume_lower
+        ]
 
-        original = str(rewrite.get("original") or "").strip()
-        suggested = str(rewrite.get("suggested") or "").strip()
-        reason = str(rewrite.get("reason") or "").strip()
+        safe_rewrites = []
 
-        # A rewrite is useless if we cannot identify the original bullet.
-        if not original:
-            continue
+        blocked_terms = [
+            "signal integrity",
+            "formal verification",
+            "uvm",
+            "coverage-driven",
+            "coverage driven",
+            "post-silicon",
+            "post silicfor rewriteon",
+            "power integrity",
+            "randomized testing",
+        ]
 
-        # Guarantee every rewrite satisfies the Pydantic schema.
-        if not suggested:
-            suggested = original
+        experience_upgrades = [
+            "gained practical experience",
+            "gained hands-on experience",
+            "gained hands on experience",
+            "proficient",
+            "expert",
+            "advanced experience",
+        ]
 
-        if not reason:
-            reason = "No safe wording improvement was provided."
+        for rewrite in result.get("bullet_rewrites", []):
+            # Ignore malformed model output instead of letting it crash
+            # the entire tailoring response.
+            if not isinstance(rewrite, dict):
+                continue
 
-        original_lower = original.lower()
-        suggested_lower = suggested.lower()
+            original = str(rewrite.get("original") or "").strip()
+            suggested = str(rewrite.get("suggested") or "").strip()
+            reason = str(rewrite.get("reason") or "").strip()
 
-        introduced_blocked_term = any(
-            term in suggested_lower and term not in original_lower
-            for term in blocked_terms
-        )
+            # A rewrite is useless if we cannot identify the original bullet.
+            if not original:
+                continue
 
-        introduced_experience_upgrade = any(
-            phrase in suggested_lower and phrase not in original_lower
-            for phrase in experience_upgrades
-        )
+            # Guarantee every rewrite satisfies the Pydantic schema.
+            if not suggested:
+                suggested = original
 
-        if introduced_blocked_term or introduced_experience_upgrade:
-            safe_rewrites.append(
-                {
-                    "original": original,
-                    "suggested": original,
-                    "reason": (
-                        "Rejected because the rewrite introduced an "
-                        "unsupported or stronger claim."
-                    ),
-                }
-            )
-        else:
-            safe_rewrites.append(
-                {
-                    "original": original,
-                    "suggested": suggested,
-                    "reason": reason,
-                }
+            if not reason:
+                reason = "No safe wording improvement was provided."
+
+            original_lower = original.lower()
+            suggested_lower = suggested.lower()
+
+            introduced_blocked_term = any(
+                term in suggested_lower and term not in original_lower
+                for term in blocked_terms
             )
 
-    result["bullet_rewrites"] = safe_rewrites
-    return result
+            introduced_experience_upgrade = any(
+                phrase in suggested_lower and phrase not in original_lower
+                for phrase in experience_upgrades
+            )
+
+            if introduced_blocked_term or introduced_experience_upgrade:
+                safe_rewrites.append(
+                    {
+                        "original": original,
+                        "suggested": original,
+                        "reason": (
+                            "Rejected because the rewrite introduced an "
+                            "unsupported or stronger claim."
+                        ),
+                    }
+                )
+            else:
+                safe_rewrites.append(
+                    {
+                        "original": original,
+                        "suggested": suggested,
+                        "reason": reason,
+                    }
+                )
+
+        result["bullet_rewrites"] = safe_rewrites
+        return result
     
