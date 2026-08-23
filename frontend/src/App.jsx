@@ -128,7 +128,7 @@ async function handleResumeFile(event) {
       <header className="top-header">
   <div>
     <div className="brand-row">
-      <div className="brand-icon">A</div>
+      <div className="brand-icon">R</div>
 
       <div>
         <h1>ResCheck</h1>
