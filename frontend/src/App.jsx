@@ -79,6 +79,7 @@ async function handleResumeFile(event) {
 
       const data = await response.json();
       setResult(data);
+      setError("");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -115,8 +116,9 @@ async function handleResumeFile(event) {
 
     const data = await response.json();
     setTailorResult(data);
+    setError("");
   } catch (err) {
-    setError(err.message);
+    setError("Tailoring failed. Please try again.");
   } finally {
     setTailorLoading(false);
   }
