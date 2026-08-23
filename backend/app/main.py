@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
-    "https://reschek.onrender.com/",
+    "https://reschek.onrender.com",
 ],
     allow_credentials=True,
     allow_methods=["*"],
