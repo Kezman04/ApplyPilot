@@ -131,7 +131,7 @@ async function handleResumeFile(event) {
       <div className="brand-icon">A</div>
 
       <div>
-        <h1>ApplyPilot</h1>
+        <h1>ResCheck</h1>
         <p className="brand-subtitle">
           AI-powered resume matching and tailoring
         </p>
